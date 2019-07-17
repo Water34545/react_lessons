@@ -10,7 +10,6 @@ class Article extends Component {
         <h2>{article.title}</h2>
         <button onClick={onBtnClick}>{btnText}</button>
         {this.getBody()}
-        <CommentsList comments={article.comments} />
       </div>
     );
   }
@@ -18,7 +17,14 @@ class Article extends Component {
   getBody() {
     const { isOpen, article } = this.props;
     if (!isOpen) return null;
-    return <section>{article.text}</section>;
+    if (typeof article.comments == "undefined")
+      return <section>{article.text}</section>;
+    return (
+      <section>
+        {article.text}
+        <CommentsList comments={article.comments} />
+      </section>
+    );
   }
 }
 

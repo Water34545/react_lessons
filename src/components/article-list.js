@@ -4,7 +4,6 @@ import useAccordion from "../custom-hooks/accordion";
 
 export default function ArticleList({ articles }) {
   const { openItemId, toggleOpenItem } = useAccordion();
-
   const articleItems = articles.map(article => (
     <li key={article.id}>
       <Article
