@@ -17,8 +17,6 @@ class Article extends Component {
   getBody() {
     const { isOpen, article } = this.props;
     if (!isOpen) return null;
-    if (typeof article.comments == "undefined")
-      return <section>{article.text}</section>;
     return (
       <section>
         {article.text}

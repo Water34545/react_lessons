@@ -6,7 +6,7 @@ class Comment extends Component {
 
     return (
       <div>
-        <h2>{comment.user}</h2>
+        <h4>{comment.user}</h4>
         <section>{comment.text}</section>
       </div>
     );
