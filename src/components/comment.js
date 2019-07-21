@@ -5,7 +5,7 @@ class Comment extends Component {
     const { comment } = this.props;
 
     return (
-      <div>
+      <div key={comment.id}>
         <h4>{comment.user}</h4>
         <section>{comment.text}</section>
       </div>
