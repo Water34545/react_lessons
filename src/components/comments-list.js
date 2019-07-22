@@ -1,15 +1,55 @@
-import React, { Component } from "react";
+import React from "react";
 import Comment from "./comment";
-import AccodrionComponent from "./accordion-component";
+import useAccordionItem from "../custom-hooks/accordionItem";
 
-class CommentsList extends Component {
-  state = {
-    isOpen: false
-  };
+export default function ArticleList({ comments }) {
+  const { isOpen, toggleOpen } = useAccordionItem();
+  const commentItems =
+    comments != "undefined"
+      ? comments.map(comment => (
+          <li key={comment.id}>
+            <Comment comment={comment} />
+          </li>
+        ))
+      : "";
 
-  toggleOpen = isOpen => () => {
-    this.setState({ isOpen: !isOpen });
-  };
+  return (
+    <div>
+      <h3>
+        Comments
+        <button onClick={toggleOpen(isOpen)}>
+          {isOpen ? "close" : "open"}
+        </button>
+      </h3>
+      <ul>{isOpen ? commentItems : ""}</ul>
+    </div>
+  );
+}
+
+//Decorator
+/*function CommentsList({ comments, isOpen, toggleOpen }) {
+  const commentItems = comments != "undefined" ? comments.map((comment) => (
+    <li key={comment.id}>
+        <Comment comment={comment} />
+    </li>
+  ))
+  :
+  ''
+
+  return <div>
+          <h3>
+            Comments
+            <button onClick={toggleOpen(isOpen)}>
+              {isOpen ? "close" : "open"}
+            </button>
+          </h3>
+          <ul>{isOpen ? commentItems : ""}</ul>
+        </div>
+}
+export default accordionItem(CommentsList)*/
+
+//extend class
+/*class CommentsList extends AccodrionItem {
 
   render() {
     return (
@@ -36,4 +76,4 @@ class CommentsList extends Component {
   }
 }
 
-export default CommentsList;
+export default CommentsList;*/
