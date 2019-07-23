@@ -1,10 +1,17 @@
-import React from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Article from "./article";
-import useAccordion from "../custom-hooks/accordion";
+import accordion from "../decorators/accordion";
+//import useAccordion from '../custom-hooks/accordion'
 
-export default function ArticleList({ articles }) {
-  const { openItemId, toggleOpenItem } = useAccordion();
-  const articleItems = articles.map(article => (
+/*
+export default function ArticleList({ articles, fetchAll }) {
+  const { openItemId, toggleOpenItem } = useAccordion()
+    useEffect(() => {
+        fetchAll()
+    })
+
+  const articleItems = articles.map((article) => (
     <li key={article.id}>
       <Article
         article={article}
@@ -12,28 +19,36 @@ export default function ArticleList({ articles }) {
         isOpen={article.id === openItemId}
       />
     </li>
-  ));
+  ))
 
-  return <ul>{articleItems}</ul>;
+  return <ul className="test--article-list__container">{articleItems}</ul>
 }
+*/
 
 //import AccodrionComponent from './accordion-component'
-/*
-import accordion from '../decorators/accordion'
 
-function ArticleList({ articles, toggleOpenArticle, openArticleId }) {
-    const articleItems = articles.map((article) => (
+class ArticleList extends Component {
+  componentDidMount() {
+    this.props.fetchAll && this.props.fetchAll();
+  }
+
+  render() {
+    const { articles, toggleOpenItem, openItemId } = this.props;
+    const articleItems = articles.map(article => (
       <li key={article.id}>
         <Article
           article={article}
-          onBtnClick={toggleOpenArticle(article.id)}
-          isOpen={article.id === openArticleId}
+          onBtnClick={toggleOpenItem(article.id)}
+          isOpen={article.id === openItemId}
         />
       </li>
-    ))
+    ));
 
-    return <ul>{articleItems}</ul>
+    return <ul className="test--article-list__container">{articleItems}</ul>;
+  }
 }
+ArticleList.propTypes = {
+  articles: PropTypes.array.isRequired
+};
 
-export default accordion(ArticleList)
-*/
+export default accordion(ArticleList);
