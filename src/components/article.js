@@ -16,12 +16,13 @@ class Article extends Component {
 
   getBody() {
     const { isOpen, article } = this.props;
-    if (!isOpen) return null;
     return (
-      <section>
-        {article.text}
-        <CommentsList comments={article.comments} />
-      </section>
+      !isOpen && (
+        <section>
+          {article.text}
+          <CommentsList comments={article.comments} />
+        </section>
+      )
     );
   }
 }

@@ -4,14 +4,13 @@ import useAccordionItem from "../custom-hooks/accordionItem";
 
 export default function ArticleList({ comments }) {
   const { isOpen, toggleOpen } = useAccordionItem();
-  const commentItems =
-    comments != "undefined"
-      ? comments.map(comment => (
-          <li key={comment.id}>
-            <Comment comment={comment} />
-          </li>
-        ))
-      : "";
+  const commentItems = comments
+    ? comments.map(comment => (
+        <li key={comment.id}>
+          <Comment comment={comment} />
+        </li>
+      ))
+    : "";
 
   return (
     <div>
