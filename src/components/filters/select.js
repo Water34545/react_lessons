@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import Select from "react-select";
 
 function SelectFilter({ articles }) {
@@ -18,5 +19,12 @@ function SelectFilter({ articles }) {
     />
   );
 }
+
+SelectFilter.propTypes = {
+  article: PropTypes.shape({
+    title: PropTypes.string,
+    id: PropTypes.string
+  })
+};
 
 export default SelectFilter;

@@ -20,8 +20,10 @@ class CommentList extends Component {
     const { isOpen, toggleOpen } = this.props;
     const text = isOpen ? "hide comments" : "show comments";
     return (
-      <div>
-        <button onClick={toggleOpen}>{text}</button>
+      <div className="test--comments-list__container">
+        <button className="test--comments__btn" onClick={toggleOpen}>
+          {text}
+        </button>
         {this.getBody()}
       </div>
     );
@@ -32,7 +34,7 @@ class CommentList extends Component {
     if (!isOpen) return null;
 
     const body = comments.length ? (
-      <ul ref={this.setListRef}>
+      <ul className="test--comments__body" ref={this.setListRef}>
         {comments.map(comment => (
           <li key={comment.id}>
             <Comment comment={comment} />

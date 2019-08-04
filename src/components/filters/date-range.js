@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import DayPicker, { DateUtils } from "react-day-picker";
 
 import "react-day-picker/lib/style.css";
@@ -22,5 +23,7 @@ function DateRange() {
     </div>
   );
 }
+
+DateRange.propTypes = {};
 
 export default DateRange;

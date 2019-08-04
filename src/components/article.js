@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { findDOMNode } from "react-dom";
+import PropTypes from "prop-types";
 import CommentList from "./comment-list";
 
 class Article extends Component {
@@ -9,6 +9,13 @@ class Article extends Component {
     }
 
 */
+
+  static propTypes = {
+    article: PropTypes.object.isRequired,
+    isOpen: PropTypes.bool,
+    onBtnClick: PropTypes.func
+  };
+
   render() {
     const { article, isOpen, onBtnClick } = this.props;
     return (
