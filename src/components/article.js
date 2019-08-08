@@ -1,51 +1,41 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import CommentList from "./comment-list";
+import { deleteArticle } from "../ac";
 
 class Article extends Component {
-  /*
-    componentDidCatch(error) {
-        console.log('---', error)
-    }
-
-*/
-
-  static propTypes = {
-    article: PropTypes.object.isRequired,
-    isOpen: PropTypes.bool,
-    onBtnClick: PropTypes.func
-  };
-
   render() {
     const { article, isOpen, onBtnClick } = this.props;
     return (
       <div>
         <h3>{article.title}</h3>
-        <button onClick={onBtnClick} className="test--article__btn">
+        <button onClick={onBtnClick} className="test__article--btn">
           {isOpen ? "close" : "open"}
         </button>
+        <button onClick={this.handleDeleteClick}>delete me</button>
         {this.getBody()}
       </div>
     );
   }
+
+  handleDeleteClick = () => {
+    this.props.deleteArticle(this.props.article.id);
+  };
 
   getBody() {
     const { isOpen, article } = this.props;
     if (!isOpen) return null;
 
     return (
-      <section className="test--article__body">
+      <section className="test__article--body">
         {article.text}
-        <CommentList comments={article.comments} ref={this.setCommentsRef} />
+        <CommentList comments={article.comments} />
       </section>
     );
   }
-
-  setCommentsRef = ref => {
-    //      window.comments = ref
-    //    console.log('---', 'comments', ref)
-    //    console.log('---', 'comments DOM', findDOMNode(ref))
-  };
 }
 
-export default Article;
+export default connect(
+  null,
+  { deleteArticle }
+)(Article);

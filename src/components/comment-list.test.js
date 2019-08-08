@@ -1,31 +1,70 @@
 import React from "react";
-import Enzyme, { mount } from "enzyme";
-import Adapter from "enzyme-adapter-react-16";
-import CommentList from "./comment-list";
+import { mount } from "enzyme/build";
 import articles from "../fixtures";
-
-Enzyme.configure({ adapter: new Adapter() });
+import DecoratedCommentList, { CommentList } from "./comment-list";
+import CommentForm from "./comment-form";
 
 describe("CommentList", () => {
-  it("should render CommentList", () => {
-    const container = mount(<CommentList comments={[]} />);
-    expect(container.find(".test--comments-list__container").length).toBe(1);
-  });
+  it("should render closed comments by default", () => {
+    const wrapper = mount(
+      <DecoratedCommentList comments={articles[0].comments} />
+    );
 
-  it("should render all comments closed by default", () => {
-    const container = mount(<CommentList comments={articles[0].comments} />);
-    expect(container.find(".test--comments__body").length).toBe(0);
+    expect(wrapper.find(".test__comment-list--body").length).toBe(0);
   });
 
   it("should open comments on click", () => {
-    const container = mount(<CommentList comments={articles[0].comments} />);
-    expect(container.find(".test--comments__body").length).toBe(0);
+    const wrapper = mount(
+      <DecoratedCommentList comments={articles[0].comments} />
+    );
 
-    container
-      .find(".test--comments__btn")
+    wrapper
+      .find(".test__comment-list--btn")
       .at(0)
       .simulate("click");
 
-    expect(container.find(".test--comments__body").length).toBe(1);
+    expect(wrapper.find(".test__comment-list--item").length).toBe(
+      articles[0].comments.length
+    );
+  });
+
+  it("should open comments on click", () => {
+    const wrapper = mount(
+      <CommentList comments={articles[0].comments} isOpen />
+    );
+
+    expect(wrapper.find(".test__comment-list--item").length).toBe(
+      articles[0].comments.length
+    );
+  });
+
+  it("should render closed comments by default", () => {
+    const wrapper = mount(
+      <CommentList comments={articles[0].comments} isOpen={false} />
+    );
+
+    expect(wrapper.find(".test__comment-list--body").length).toBe(0);
+  });
+
+  it("should display an empty comments text", () => {
+    const wrapper = mount(<DecoratedCommentList />);
+
+    wrapper
+      .find(".test__comment-list--btn")
+      .at(0)
+      .simulate("click");
+
+    expect(wrapper.find(".test__comment-list--empty").length).toBe(1);
+  });
+
+  it("should display a form", () => {
+    const wrapper = mount(<DecoratedCommentList />);
+
+    wrapper
+      .find(".test__comment-list--btn")
+      .at(0)
+      .simulate("click");
+
+    expect(wrapper.contains(<CommentForm />)).toBe(true);
   });
 });
