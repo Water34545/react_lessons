@@ -9,9 +9,7 @@ class App extends Component {
     return (
       <div>
         <h1>Article App</h1>
-        <UserForm />
-        <Counter />
-        <Filters articles={[]} />
+        <Filters />
         <ArticleList />
       </div>
     );

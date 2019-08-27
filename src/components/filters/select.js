@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import Select from "react-select";
+import { selectFIlter } from "../../ac";
 
-function SelectFilter({ articles }) {
-  const [selected, setSelection] = useState(null);
-
+function SelectFilter({ articles, selected, selectFIlter }) {
   const options = articles.map(article => ({
     label: article.title,
     value: article.id
@@ -13,10 +13,16 @@ function SelectFilter({ articles }) {
     <Select
       options={options}
       value={selected}
-      onChange={setSelection}
+      onChange={selectFIlter}
       isMulti
     />
   );
 }
 
-export default SelectFilter;
+export default connect(
+  state => ({
+    articles: state.articles,
+    selected: state.filters.selected
+  }),
+  { selectFIlter }
+)(SelectFilter);

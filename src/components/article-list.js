@@ -57,6 +57,22 @@ ArticleList.propTypes = {
   openItemId: PropTypes.string
 };
 
-export default connect(state => ({
-  articles: state.articles
-}))(accordion(ArticleList));
+export default connect(state => {
+  const {
+    selected,
+    dateRange: { from, to }
+  } = state.filters;
+
+  const flitratedArtivles = state.articles.filter(article => {
+    const publushed = Date.parse(article.date);
+    return (
+      (!selected.length ||
+        selected.find(selected => selected.value === article.id)) &&
+      (!from || !to || (publushed > from && publushed < to))
+    );
+  });
+
+  return {
+    articles: flitratedArtivles
+  };
+})(accordion(ArticleList));

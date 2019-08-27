@@ -1,14 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
+import { connect } from "react-redux";
 import DayPicker, { DateUtils } from "react-day-picker";
 
 import "react-day-picker/lib/style.css";
+import { changeDateFilter } from "../../ac";
 
-function DateRange() {
-  const [state, setState] = useState({ from: null, to: null });
-
-  const handleDayClick = day => setState(DateUtils.addDayToRange(day, state));
-
-  const { from, to } = state;
+function DateRange({ range, changeDateFilter }) {
+  const { from, to } = range;
   const selectedRange =
     from && to && `${from.toDateString()} - ${to.toDateString()}`;
 
@@ -16,11 +14,18 @@ function DateRange() {
     <div className="date-range">
       <DayPicker
         selectedDays={day => DateUtils.isDayInRange(day, { from, to })}
-        onDayClick={handleDayClick}
+        onDayClick={day =>
+          changeDateFilter(DateUtils.addDayToRange(day, range))
+        }
       />
       {selectedRange}
     </div>
   );
 }
 
-export default DateRange;
+export default connect(
+  state => ({
+    range: state.filters.dateRange
+  }),
+  { changeDateFilter }
+)(DateRange);
