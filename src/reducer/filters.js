@@ -1,6 +1,10 @@
-import { DELETE_ARTICLE, DATE_FILTER, SELECT_FILTER } from "../constants";
+import {
+  CHANGE_DATE_RANGE,
+  CHANGE_SELECTION,
+  DELETE_ARTICLE
+} from "../constants";
 
-const Defaultfilters = {
+const defaultFilters = {
   selected: [],
   dateRange: {
     from: null,
@@ -8,14 +12,15 @@ const Defaultfilters = {
   }
 };
 
-export default (filters = Defaultfilters, action) => {
+export default (filters = defaultFilters, action) => {
   const { type, payload } = action;
 
   switch (type) {
-    case DATE_FILTER:
+    case CHANGE_DATE_RANGE:
+      //            return Object.assign({}, filters, { dateRange: payload.dateRange })
       return { ...filters, dateRange: payload.dateRange };
 
-    case SELECT_FILTER:
+    case CHANGE_SELECTION:
       return { ...filters, selected: payload.selected };
 
     case DELETE_ARTICLE:

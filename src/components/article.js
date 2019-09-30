@@ -1,41 +1,57 @@
-import React, { Component } from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import CommentList from "./comment-list";
-import { deleteArticle } from "../ac";
+import { deleteArticle, loadArticle } from "../ac";
+import Loader from "./common/loader";
+import { articleSelector } from "../selectors";
 
-class Article extends Component {
-  render() {
-    const { article, isOpen, onBtnClick } = this.props;
-    return (
-      <div>
-        <h3>{article.title}</h3>
-        <button onClick={onBtnClick} className="test__article--btn">
-          {isOpen ? "close" : "open"}
-        </button>
-        <button onClick={this.handleDeleteClick}>delete me</button>
-        {this.getBody()}
-      </div>
-    );
-  }
+function Article(props) {
+  useCheckAndFetch(props);
 
-  handleDeleteClick = () => {
-    this.props.deleteArticle(this.props.article.id);
-  };
+  const { article, isOpen, onBtnClick, deleteArticle } = props;
+  if (!article) return null;
+  return (
+    <div>
+      <h3>{article.title}</h3>
+      <button onClick={onBtnClick} className="test__article--btn">
+        {isOpen ? "close" : "open"}
+      </button>
+      <button onClick={deleteArticle}>delete me</button>
+      {getBody(props)}
+    </div>
+  );
+}
 
-  getBody() {
-    const { isOpen, article } = this.props;
-    if (!isOpen) return null;
+function useCheckAndFetch(props) {
+  useEffect(() => {
+    const { id, article, loadArticle } = props;
+    if (!article || !(article.text && !article.loading)) {
+      loadArticle(id);
+    }
 
-    return (
-      <section className="test__article--body">
-        {article.text}
-        <CommentList comments={article.comments} />
-      </section>
-    );
-  }
+    //    return () => unsubscribe(id)
+  }, [props.id]);
+}
+
+function getBody(props) {
+  const { isOpen, article } = props;
+  if (!isOpen) return null;
+  if (article.loading) return <Loader />;
+
+  return (
+    <section className="test__article--body">
+      {article.text}
+      <CommentList article={article} />
+    </section>
+  );
 }
 
 export default connect(
-  null,
-  { deleteArticle }
+  (state, props) => ({
+    article: articleSelector(state, props)
+  }),
+  (dispatch, props) => ({
+    deleteArticle: () => deleteArticle(props.article.id),
+    loadArticle: (...args) => dispatch(loadArticle(...args))
+  })
 )(Article);

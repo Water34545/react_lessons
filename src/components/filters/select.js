@@ -1,9 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
 import Select from "react-select";
-import { selectFIlter } from "../../ac";
+import { connect } from "react-redux";
+import { changeSelection } from "../../ac";
+import { articleListSelector, selectedSelector } from "../../selectors";
 
-function SelectFilter({ articles, selected, selectFIlter }) {
+function SelectFilter({ articles, selected, changeSelection }) {
   const options = articles.map(article => ({
     label: article.title,
     value: article.id
@@ -13,7 +14,7 @@ function SelectFilter({ articles, selected, selectFIlter }) {
     <Select
       options={options}
       value={selected}
-      onChange={selectFIlter}
+      onChange={changeSelection}
       isMulti
     />
   );
@@ -21,8 +22,8 @@ function SelectFilter({ articles, selected, selectFIlter }) {
 
 export default connect(
   state => ({
-    articles: state.articles,
-    selected: state.filters.selected
+    selected: selectedSelector(state),
+    articles: articleListSelector(state)
   }),
-  { selectFIlter }
+  { changeSelection }
 )(SelectFilter);

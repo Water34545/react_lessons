@@ -1,8 +1,14 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import Article from "./article";
-import accordion from "../decorators/accordion";
+import {
+  articlesLoadedSelector,
+  articlesLoadingSelector,
+  filtratedArticlesSelector
+} from "../selectors";
+import { loadAllArticles } from "../ac";
+import Loader from "./common/loader";
+import { NavLink } from "react-router-dom";
 //import useAccordion from '../custom-hooks/accordion'
 
 /*
@@ -30,18 +36,20 @@ export default function ArticleList({ articles, fetchAll }) {
 
 class ArticleList extends Component {
   componentDidMount() {
-    this.props.fetchAll && this.props.fetchAll();
+    const { loading, loaded, fetchAll } = this.props;
+    fetchAll && !loading && !loaded && fetchAll();
   }
 
   render() {
-    const { articles, toggleOpenItem, openItemId } = this.props;
+    const { articles, loading } = this.props;
+
+    if (loading) return <Loader />;
+
     const articleItems = articles.map(article => (
       <li key={article.id}>
-        <Article
-          article={article}
-          onBtnClick={toggleOpenItem(article.id)}
-          isOpen={article.id === openItemId}
-        />
+        <NavLink to={`/articles/${article.id}`} activeStyle={{ color: "red" }}>
+          {article.title}
+        </NavLink>
       </li>
     ));
 
@@ -57,22 +65,11 @@ ArticleList.propTypes = {
   openItemId: PropTypes.string
 };
 
-export default connect(state => {
-  const {
-    selected,
-    dateRange: { from, to }
-  } = state.filters;
-
-  const flitratedArtivles = state.articles.filter(article => {
-    const publushed = Date.parse(article.date);
-    return (
-      (!selected.length ||
-        selected.find(selected => selected.value === article.id)) &&
-      (!from || !to || (publushed > from && publushed < to))
-    );
-  });
-
-  return {
-    articles: flitratedArtivles
-  };
-})(accordion(ArticleList));
+export default connect(
+  state => ({
+    articles: filtratedArticlesSelector(state),
+    loading: articlesLoadingSelector(state),
+    loaded: articlesLoadedSelector(state)
+  }),
+  { fetchAll: loadAllArticles }
+)(ArticleList);
