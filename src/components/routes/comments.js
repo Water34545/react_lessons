@@ -1,14 +1,22 @@
 import React from "react";
 import { Route } from "react-router-dom";
-import ArticleList from "../comment-list";
-import Article from "../comment";
+import CommentsPagination from "../comments-pagination";
 
 function CommentRoute() {
   return (
     <div>
-      <h2>Comments will be here</h2>
+      <Route path="/comments/:page" children={getComments} />
     </div>
   );
 }
+
+const getComments = ({ match }) =>
+  match ? (
+    <CommentsPagination page={match.params.page} />
+  ) : (
+    <CommentsPagination page={1} />
+  );
+
+CommentRoute.propTypes = {};
 
 export default CommentRoute;
