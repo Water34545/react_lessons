@@ -9,7 +9,7 @@ import {
   START,
   SUCCESS,
   LOAD_ARTICLE_COMMENTS,
-  LOAD_COMMENTS
+  LOAD_COMMENTS_FOR_PAGE
 } from "../constants";
 
 export function increment() {
@@ -90,20 +90,18 @@ export function loadArticleComments(articleId) {
   };
 }
 
-export function loadComments(page) {
-  return async dispatch => {
-    dispatch({
-      type: LOAD_COMMENTS + START,
-      payload: { page }
-    });
-
-    const rawRes = await fetch(`/api/comment?limit=5&offset=${page * 5}`);
-    const response = await rawRes.json();
+export function checkAndLoadCommentsForPage(page) {
+  return (dispatch, getState) => {
+    const {
+      comments: { pagination }
+    } = getState();
+    if (pagination.getIn([page, "loading"]) || pagination.getIn([page, "ids"]))
+      return;
 
     dispatch({
-      type: LOAD_COMMENTS + SUCCESS,
+      type: LOAD_COMMENTS_FOR_PAGE,
       payload: { page },
-      response
+      callAPI: `/api/comment?limit=5&offset=${(page - 1) * 5}`
     });
   };
 }

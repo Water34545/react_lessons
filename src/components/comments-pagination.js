@@ -1,82 +1,69 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
-import PropTypes from "prop-types";
-import Comment from "./comment";
 import { connect } from "react-redux";
-import { loadComments } from "../ac";
+import Comment from "./comment";
 import Loader from "./common/loader";
+import { checkAndLoadCommentsForPage } from "../ac";
+import {
+  commentsPageLoadingSelector,
+  commentsPageIdsSelector,
+  totalCommentsSelector
+} from "../selectors/index";
 
 class CommentPagination extends Component {
-  static propTypes = {
-    page: PropTypes.number
-  };
+  componentDidMount() {
+    this.props.checkAndLoadCommentsForPage(this.props.page);
+  }
 
-  componentDidUpdate(oldProps) {
-    const { page, loadComments } = this.props;
-    if (!oldProps.isOpen && !page.commentsLoading && !page.commentsLoaded) {
-      loadComments(page);
-    }
+  componentDidUpdate() {
+    const { page, checkAndLoadCommentsForPage } = this.props;
+    checkAndLoadCommentsForPage(page);
   }
 
   render() {
-    const { page } = this.props;
+    const { total } = this.props;
+    if (!total) return <Loader />;
     return (
       <div>
-        <h2>Comments will be here page={page}</h2>
-        {this.getBody()}
-        {pagination(page)}
+        {this.getCommentsItems()}
+        {this.getPaginator()}
       </div>
     );
   }
 
-  getBody() {
-    const {
-      page: { comments, commentsLoading, commentsLoaded }
-    } = this.props;
-    if (commentsLoading) return <Loader />;
-    if (!commentsLoaded) return null;
+  getCommentsItems() {
+    const { comments, laoding } = this.props;
+    if (laoding || !comments) return <Loader />;
+    const commentsItems = comments.map(id => (
+      <li key={id}>
+        <Comment id={id} />
+      </li>
+    ));
+    return <ul>{commentsItems}</ul>;
+  }
 
-    const body = comments.length ? (
-      <ul className="test__comment-list--body">
-        {comments.map(id => (
-          <li key={id} className="test__comment-list--item">
-            <Comment id={id} />
-          </li>
-        ))}
-      </ul>
-    ) : (
-      <h3 className="test__comment-list--empty">No comments yet</h3>
-    );
-
-    return <div className="test__comment-list--body">{body}</div>;
+  getPaginator() {
+    const { total } = this.props;
+    const items = new Array(Math.floor(total - 1) / 5 + 1)
+      .fill()
+      .map((_, i) => (
+        <li key={i}>
+          <NavLink to={`/comments/${i + 1}`} activeStyle={{ color: "red" }}>
+            {i + 1}
+          </NavLink>
+        </li>
+      ));
+    return <ul>{items}</ul>;
   }
 }
 
-const pagination = page =>
-  +page === 1 ? (
-    <ul>
-      <li key={+page + 1}>
-        <NavLink to={`/comments/${+page + 1}`} activeStyle={{ color: "red" }}>
-          Next
-        </NavLink>
-      </li>
-    </ul>
-  ) : (
-    <ul>
-      <li key={+page + 1}>
-        <NavLink to={`/comments/${+page + 1}`} activeStyle={{ color: "red" }}>
-          Next
-        </NavLink>
-      </li>
-      <li key={+page - 1}>
-        <NavLink to={`/comments/${+page - 1}`} activeStyle={{ color: "red" }}>
-          Prev
-        </NavLink>
-      </li>
-    </ul>
-  );
-
 export default connect(
-  null,
-  { loadComments }
+  (state, props) => {
+    return {
+      total: totalCommentsSelector(state),
+      laoding: commentsPageLoadingSelector(state, props),
+      comments: commentsPageIdsSelector(state, props)
+    };
+  },
+  { checkAndLoadCommentsForPage }
 )(CommentPagination);

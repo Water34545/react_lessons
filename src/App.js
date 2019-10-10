@@ -19,7 +19,7 @@ class App extends Component {
               </NavLink>
             </div>
             <div>
-              <NavLink to="/comments" activeStyle={{ color: "red" }}>
+              <NavLink to="/comments/1" activeStyle={{ color: "red" }}>
                 Comments
               </NavLink>
             </div>

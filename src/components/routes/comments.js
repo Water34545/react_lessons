@@ -3,19 +3,12 @@ import { Route } from "react-router-dom";
 import CommentsPagination from "../comments-pagination";
 
 function CommentRoute() {
-  return (
-    <div>
-      <Route path="/comments/:page" children={getComments} />
-    </div>
-  );
+  return <Route path="/comments/:page" children={getCommentsPaginator} />;
 }
 
-const getComments = ({ match }) =>
-  match ? (
-    <CommentsPagination page={match.params.page} />
-  ) : (
-    <CommentsPagination page={1} />
-  );
+function getCommentsPaginator({ match }) {
+  return <CommentsPagination page={match.params.page} />;
+}
 
 CommentRoute.propTypes = {};
 
